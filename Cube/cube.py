@@ -6,7 +6,7 @@ class Cube:
     def __init__(self, dim):
         self.dim = dim
         self.front = Side(self.dim)
-        self.__built_cube()
+        self.__build_cube()
 
     def __str__(self):
         res = ""
@@ -19,7 +19,7 @@ class Cube:
 
         return res
 
-    def __built_cube(self):
+    def __build_cube(self):
         top = Side(self.dim)
         right = Side(self.dim)
         bottom = Side(self.dim)
@@ -108,6 +108,12 @@ class Cube:
                 self.front.top.side[end][i] = temp
 
     def turn(self, side, direction):
+        """
+        run a single move on the cube
+        :param side:
+        :param direction:
+        :return: void
+        """
         if side == 'U':
             self.__move('t')
             self.__turn(direction)
@@ -142,6 +148,11 @@ class Cube:
             pass
 
     def sequence(self, sequence):
+        """
+        run a sequence of moves on the cube
+        :param sequence:
+        :return: void
+        """
         moved = False
         sequence = sequence.split()
         for move in sequence:
@@ -169,6 +180,13 @@ class Cube:
                 moved = False
 
     def load_scramble(self, scramble):
+        """
+        loads the scramble onto the cube
+
+        :param scramble:
+        :return: void
+        """
+
         sideSize = self.dim[0] * self.dim[1]
         scramble = list(scramble)[:sideSize * 6]
 
