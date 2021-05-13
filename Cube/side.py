@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Side:
     def __init__(self, colors):
         colors = list(colors)

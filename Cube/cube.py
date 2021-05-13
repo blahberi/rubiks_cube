@@ -1,9 +1,9 @@
 import numpy as np
 from Cube.side import Side
 
+
 class Cube:
     def __init__(self):
-        
         self.front = Side('ggggggggg')
         self.__built_cube()
 
@@ -55,7 +55,6 @@ class Cube:
         self.front.bottom = bottom
         self.front.left = left
 
-
     def __move(self, direction):
         if direction == "t":
             self.front.left.side = np.rot90(self.front.left.side, -1)
@@ -77,7 +76,7 @@ class Cube:
             self.front = self.front.left
 
     def __turn(self, direction):
-        directions = {'r':-1, 'l':1}
+        directions = {'r': -1, 'l': 1}
         self.front.side = np.rot90(self.front.side, directions[direction])
         if direction == 'l':
             for i in range(3):
@@ -133,7 +132,7 @@ class Cube:
             pass
 
     def sequence(self, sequence):
-        opposite = {'R':'L', 'L': 'R', 'U':'D', 'D':'U', 'F':'B', 'B':'F'}
+        opposite = {'R': 'L', 'L': 'R', 'U': 'D', 'D': 'U', 'F': 'B', 'B': 'F'}
         moved = False
         sequence = sequence.split()
         for move in sequence:
@@ -146,16 +145,16 @@ class Cube:
                 for i in range(2):
                     if "W" in move:
                         self.turn(opposite[move[0]], direction)
-                        #W moves are not fully done yet
+                        # W moves are not fully done yet
                     else:
                         self.turn(move[0], direction)
                         moved = True
 
             elif "W" in move:
                 self.turn(opposite[move[0]], direction)
-                #W moves are not fully done yet
+                # W moves are not fully done yet
 
-            if moved == False:
+            if not moved:
                 self.turn(move[0], direction)
             else:
                 moved = False
