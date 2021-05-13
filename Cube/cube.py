@@ -3,8 +3,9 @@ from Cube.side import Side
 
 
 class Cube:
-    def __init__(self):
-        self.front = Side('ggggggggg')
+    def __init__(self, dim):
+        self.dim = dim
+        self.front = Side(self.dim)
         self.__built_cube()
 
     def __str__(self):
@@ -19,11 +20,11 @@ class Cube:
         return res
 
     def __built_cube(self):
-        top = Side('wwwwwwwww')
-        right = Side('rrrrrrrrr')
-        bottom = Side('yyyyyyyyy')
-        left = Side('ooooooooo')
-        back = Side('bbbbbbbbb')
+        top = Side(self.dim)
+        right = Side(self.dim)
+        bottom = Side(self.dim)
+        left = Side(self.dim)
+        back = Side(self.dim)
 
         top.top = back
         top.right = right
@@ -55,6 +56,14 @@ class Cube:
         self.front.bottom = bottom
         self.front.left = left
 
+        sideSize = self.dim[0] * self.dim[1]
+        scramble = ""
+        colors = ['w', 'o', 'g', 'r', 'b', 'y']
+        for color in colors:
+            for i in range(sideSize):
+                scramble += color
+        self.load_scramble(scramble)
+
     def __move(self, direction):
         if direction == "t":
             self.front.left.side = np.rot90(self.front.left.side, -1)
@@ -78,24 +87,25 @@ class Cube:
     def __turn(self, direction):
         directions = {'r': -1, 'l': 1}
         self.front.side = np.rot90(self.front.side, directions[direction])
+        end = self.dim[0] - 1
         if direction == 'l':
-            for i in range(3):
-                temp = self.front.top.side[2][i]
-                self.front.top.side[2][i] = self.front.right.side[i][0]
-                self.front.right.side[i][0] = self.front.bottom.side[0][2 - i]
-                self.front.bottom.side[0][2 - i] = self.front.left.side[2 - i][2]
-                self.front.left.side[2 - i][2] = temp
+            for i in range(self.dim[0]):
+                temp = self.front.top.side[end][i]
+                self.front.top.side[end][i] = self.front.right.side[i][0]
+                self.front.right.side[i][0] = self.front.bottom.side[0][end - i]
+                self.front.bottom.side[0][(self.dim[0] - 1) - i] = self.front.left.side[end - i][end]
+                self.front.left.side[end - i][end] = temp
         if direction == 'r':
-            for i in range(3):
+            for i in range(self.dim[0]):
                 temp = self.front.right.side[i][0]
-                self.front.right.side[i][0] = self.front.top.side[2][i]
-                temp2 = self.front.bottom.side[0][2 - i]
-                self.front.bottom.side[0][2 - i] = temp
+                self.front.right.side[i][0] = self.front.top.side[end][i]
+                temp2 = self.front.bottom.side[0][end - i]
+                self.front.bottom.side[0][end - i] = temp
                 temp = temp2
-                temp2 = self.front.left.side[2 - i][2]
-                self.front.left.side[2 - i][2] = temp
+                temp2 = self.front.left.side[end - i][end]
+                self.front.left.side[end - i][end] = temp
                 temp = temp2
-                self.front.top.side[2][i] = temp
+                self.front.top.side[end][i] = temp
 
     def turn(self, side, direction):
         if side == 'U':
@@ -144,17 +154,34 @@ class Cube:
             elif "2" in move:
                 for i in range(2):
                     if "W" in move:
-                        self.turn(opposite[move[0]], direction)
+                        pass
                         # W moves are not fully done yet
                     else:
                         self.turn(move[0], direction)
                         moved = True
 
             elif "W" in move:
-                self.turn(opposite[move[0]], direction)
+                pass
                 # W moves are not fully done yet
 
             if not moved:
                 self.turn(move[0], direction)
             else:
                 moved = False
+
+    def load_scramble(self, scramble):
+        sideSize = self.dim[0] * self.dim[1]
+        scramble = list(scramble)[:sideSize * 6]
+
+        front = self.front
+        top = self.front.top
+        right = self.front.right
+        bottom = self.front.bottom
+        left = self.front.left
+        back = self.front.right.right
+
+        sides = [top, left, front, right, back, bottom]
+        i = 0
+        for side in sides:
+            side.load_colors(scramble[i:i + sideSize])
+            i += sideSize
