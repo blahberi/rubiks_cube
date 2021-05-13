@@ -11,7 +11,6 @@ class Side:
         self.bottom = None
         self.left = None
 
-
     def load_colors(self, colors):
         colors = list(colors)[:self.dim[0] * self.dim[1]]
         self.side = np.array(colors)
@@ -22,7 +21,6 @@ class Side:
             for x in range(len(self.side[y])):
                 self.side[y][x] = colors[i]
                 i += 1
-
 
     def __str__(self):
         res = ""

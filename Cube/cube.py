@@ -142,7 +142,6 @@ class Cube:
             pass
 
     def sequence(self, sequence):
-        opposite = {'R': 'L', 'L': 'R', 'U': 'D', 'D': 'U', 'F': 'B', 'B': 'F'}
         moved = False
         sequence = sequence.split()
         for move in sequence:
