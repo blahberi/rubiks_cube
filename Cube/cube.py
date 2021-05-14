@@ -1,151 +1,168 @@
 import numpy as np
-from Cube.side import Side
+from Cube.cell import Cell
+
+class MagicalMatrix:
+    def __init__(self):
+        self.magical_matrix = np.array([
+            [
+                [[0, 0, 1], [0, 1, 0], [-1, 0, 0]],
+                [[0, 0, -1], [0, 1, 0], [1, 0, 0]]
+            ],
+            [
+                [[1, 0, 0], [0, 0, -1], [0, 1, 0]],
+                [[1, 0, 0], [0, 0, 1], [0, -1, 0]]
+            ],
+            [
+                [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
+                [[0, 1, 0], [-1, 0, 0], [0, 0, 1]]
+            ],
+            [
+                [[1, 0, 0], [0, 0, 1], [0, -1, 0]],
+                [[1, 0, 0], [0, 0, -1], [0, 1, 0]]
+            ],
+            [
+                [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
+                [[0, -1, 0], [1, 0, 0], [0, 0, 1]]
+            ],
+            [
+                [[0, 0, -1], [0, 1, 0], [1, 0, 0]],
+                [[0, 0, 1], [0, 1, 0], [-1, 0, 0]]
+            ]])
+
+    def get_matrix(self, move, direction):
+        moveInt = 0
+        directions = {'r': 1, 'l': 0}
+        moves = ['U', 'L', 'F', 'R', 'B', 'D']
+        for m in moves:
+            if m == move:
+                moveInt = moves.index(m)
+        return self.magical_matrix[moveInt][directions[direction]]
 
 
 class Cube:
-    def __init__(self, dim):
-        self.dim = dim
-        self.front = Side(self.dim)
-        self.__build_cube()
+    def __init__(self, scramble=None):
+        self.magical_matrix = MagicalMatrix()
+        self.cells = []
+        self.dim = (3, 3)
+        self.positionNums = []
+        self.__build_cube(scramble)
+        self.colorToNorm = {'U': (0, -1, 0), 'L': (-1, 0, 0), 'F': (0, 0, -1), 'R': (1, 0, 0), 'B': (0, 0, 1), 'D': (0, 1, 0)}
 
-    def __str__(self):
-        res = ""
-        res += str(self.front.top) + '\n'
-        res += str(self.front.left) + '\n'
-        res += str(self.front) + '\n'
-        res += str(self.front.right) + '\n'
-        res += str(self.front.right.right) + '\n'
-        res += str(self.front.bottom) + '\n'
+    def __build_cube(self, scramble):
+        if not scramble:
+            scramble = self.__get_solved_scramble()
+        sideSize = self.dim[0] * self.dim[1]
+        scramble = list(scramble)
 
+        self.positionsNums = []
+        
+        if sideSize % 2 == 0:
+            nums = range(int(self.dim[0] / 2))
+            for i in nums:
+                self.positionsNums.append(-i - 1)
+            self.positionsNums.reverse()
+            
+            for i in nums:
+                self.positionsNums.append(i + 1)
+        else:
+            nums = range(int((self.dim[0] - 1) / 2))
+            for i in nums:
+                self.positionsNums.append(-i - 1)
+            self.positionsNums.reverse()
+            self.positionsNums.append(0)
+            for i in nums:
+                self.positionsNums.append(i + 1)
+
+        i = 0
+        #top
+        for z in self.positionsNums:
+            for x in self.positionsNums:
+                self.cells.append(Cell(point=(x, -1, z), norm=(0, -1, 0), color=scramble[i]))
+                i += 1
+        #left
+        for y in self.positionsNums:
+            for z in self.positionsNums:
+                self.cells.append(Cell(point=(-1, y, z), norm=(-1, 0, 0), color=scramble[i]))
+                i += 1
+        #front
+        for y in self.positionsNums:
+            for x in self.positionsNums:
+                self.cells.append(Cell(point=(x, y, -1), norm=(0, 0, -1), color=scramble[i]))
+                i += 1
+        #right
+        for y in self.positionsNums:
+            for z in self.positionsNums:
+                self.cells.append(Cell(point=(1, y, z), norm=(1, 0, 0), color=scramble[i]))
+                i += 1
+        #back
+        for y in self.positionsNums:
+            for x in self.positionsNums:
+                self.cells.append(Cell(point=(x, y, 1), norm=(0, 0, 1), color=scramble[i]))
+                i += 1
+
+        #bottom
+        for z in self.positionsNums:
+            for x in self.positionsNums:
+                self.cells.append(Cell(point=(x, 1, z), norm=(0, 1, 0), color=scramble[i]))
+                i += 1
+
+    def __get_side(self, side):
+        res = []
+        temp = []
+        for cell in self.cells:
+            if cell.norm == self.colorToNorm[side]:
+                temp.append(cell)
+
+        for a in self.positionsNums:
+            for b in self.positionsNums:
+                point = []
+                for i in range(3):
+                    if self.colorToNorm[side][i] == 0:
+                        if i == 0:
+                            point.append(b)
+                        elif i == 1:
+                            point.append(a)
+                        elif i == 2:
+                            if self.colorToNorm[side][0] == 0:
+                                point.append(a)
+                            else:
+                                point.append(b)
+                    else:
+                        point.append(self.colorToNorm[side][i])
+                for cell in temp:
+                    if cell.point == tuple(point):
+                        res.append(cell)
         return res
 
-    def __build_cube(self):
-        top = Side(self.dim)
-        right = Side(self.dim)
-        bottom = Side(self.dim)
-        left = Side(self.dim)
-        back = Side(self.dim)
-
-        top.top = back
-        top.right = right
-        top.bottom = self.front
-        top.left = left
-
-        right.top = top
-        right.right = back
-        right.bottom = bottom
-        right.left = self.front
-
-        bottom.top = self.front
-        bottom.right = right
-        bottom.bottom = back
-        bottom.left = left
-
-        left.top = top
-        left.right = self.front
-        left.bottom = bottom
-        left.left = back
-
-        back.top = top
-        back.right = right
-        back.bottom = bottom
-        back.left = left
-
-        self.front.top = top
-        self.front.right = right
-        self.front.bottom = bottom
-        self.front.left = left
-
+    def __get_solved_scramble(self):
+        res = ''
+        sides = ['w', 'o', 'g', 'r', 'b', 'y']
         sideSize = self.dim[0] * self.dim[1]
-        scramble = ""
-        colors = ['w', 'o', 'g', 'r', 'b', 'y']
-        for color in colors:
+        for side in sides:
             for i in range(sideSize):
-                scramble += color
-        self.load_scramble(scramble)
-
-    def __move(self, direction):
-        if direction == "t":
-            self.front.left.side = np.rot90(self.front.left.side, -1)
-            self.front.right.side = np.rot90(self.front.right.side, 1)
-            self.front = self.front.top
-            self.front.right.right.side = np.rot90(self.front.right.right.side, 2)
-        elif direction == "r":
-            self.front.top.side = np.rot90(self.front.top.side, -1)
-            self.front.bottom.side = np.rot90(self.front.bottom.side, 1)
-            self.front = self.front.right
-        elif direction == "b":
-            self.front.right.side = np.rot90(self.front.right.side, -1)
-            self.front.left.side = np.rot90(self.front.left.side, 1)
-            self.front = self.front.bottom
-            self.front.right.right.side = np.rot90(self.front.right.right.side, 2)
-        elif direction == "l":
-            self.front.bottom.side = np.rot90(self.front.bottom.side, -1)
-            self.front.top.side = np.rot90(self.front.top.side, 1)
-            self.front = self.front.left
-
-    def __turn(self, direction):
-        directions = {'r': -1, 'l': 1}
-        self.front.side = np.rot90(self.front.side, directions[direction])
-        end = self.dim[0] - 1
-        if direction == 'l':
-            for i in range(self.dim[0]):
-                temp = self.front.top.side[end][i]
-                self.front.top.side[end][i] = self.front.right.side[i][0]
-                self.front.right.side[i][0] = self.front.bottom.side[0][end - i]
-                self.front.bottom.side[0][(self.dim[0] - 1) - i] = self.front.left.side[end - i][end]
-                self.front.left.side[end - i][end] = temp
-        if direction == 'r':
-            for i in range(self.dim[0]):
-                temp = self.front.right.side[i][0]
-                self.front.right.side[i][0] = self.front.top.side[end][i]
-                temp2 = self.front.bottom.side[0][end - i]
-                self.front.bottom.side[0][end - i] = temp
-                temp = temp2
-                temp2 = self.front.left.side[end - i][end]
-                self.front.left.side[end - i][end] = temp
-                temp = temp2
-                self.front.top.side[end][i] = temp
+                res += side
+        return res
 
     def turn(self, side, direction):
-        """
-        run a single move on the cube
-        :param side:
-        :param direction:
-        :return: void
-        """
-        if side == 'U':
-            self.__move('t')
-            self.__turn(direction)
-            self.__move('b')
+        cells = []
+        negative = self.positionsNums[0]
+        positive = self.positionsNums[-1]
+        sidesPoint = {'U': (1, negative), 'L': (0, negative), 'F': (2, negative), 'R': (0, positive), 'B': (2, positive), 'D': (1, positive)}
 
-        elif side == 'R':
-            self.__move('r')
-            self.__turn(direction)
-            self.__move('l')
+        for cell in self.cells:
+            if cell.point[sidesPoint[side][0]] == sidesPoint[side][1]:
+                cells.append(cell)
 
-        elif side == 'D':
-            self.__move('r')
-            self.__turn(direction)
-            self.__move('l')
+        sideCells = self.__get_side(side)
+        beltCells = []
+        for cell in cells:
+            if cell not in sideCells:
+                beltCells.append(cell)
 
-        elif side == 'L':
-            self.__move('l')
-            self.__turn(direction)
-            self.__move('r')
-
-        elif side == 'B':
-            self.__move('r')
-            self.__move('r')
-            self.__turn(direction)
-            self.__move('l')
-            self.__move('l')
-
-        elif side == 'F':
-            self.__turn(direction)
-
-        elif side == 'M':
-            pass
+        for cell in cells:
+            cell.point = tuple(np.dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
+            if cell in beltCells:
+                cell.norm = tuple(np.dot(list(cell.norm), self.magical_matrix.get_matrix(side, direction)))
 
     def sequence(self, sequence):
         """
@@ -179,26 +196,21 @@ class Cube:
             else:
                 moved = False
 
-    def load_scramble(self, scramble):
-        """
-        loads the scramble onto the cube
-
-        :param scramble:
-        :return: void
-        """
-
-        sideSize = self.dim[0] * self.dim[1]
-        scramble = list(scramble)[:sideSize * 6]
-
-        front = self.front
-        top = self.front.top
-        right = self.front.right
-        bottom = self.front.bottom
-        left = self.front.left
-        back = self.front.right.right
-
-        sides = [top, left, front, right, back, bottom]
-        i = 0
+    def __str__(self):
+        res = ''
+        sides = ['U', 'L', 'F', 'R', 'B', 'D']
         for side in sides:
-            side.load_colors(scramble[i:i + sideSize])
-            i += sideSize
+            cells = self.__get_side(side)
+            colors = []
+            for cell in cells:
+                colors.append(cell.color)
+            i = 0
+            for a in range(self.dim[0]):
+                for b in range(self.dim[1]):
+                    res += colors[i]
+                    res += " "
+                    i += 1
+                res += '\n'
+            res += '\n'
+
+        return res
