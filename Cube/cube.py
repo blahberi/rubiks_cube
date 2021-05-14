@@ -43,7 +43,7 @@ class Cube:
     def __init__(self, scramble=None):
         self.magical_matrix = MagicalMatrix()
         self.cells = []
-        self.dim = (3, 3)
+        self.dim = (3 , 3)
         self.positionNums = []
         self.__build_cube(scramble)
         self.colorToNorm = {'U': (0, -1, 0), 'L': (-1, 0, 0), 'F': (0, 0, -1), 'R': (1, 0, 0), 'B': (0, 0, 1), 'D': (0, 1, 0)}
@@ -201,6 +201,12 @@ class Cube:
         sides = ['U', 'L', 'F', 'R', 'B', 'D']
         for side in sides:
             cells = self.__get_side(side)
+            if side == 'B':
+                cells = np.array(cells)
+                cells = cells.reshape(self.dim[0], self.dim[1])
+                cells = np.rot90(cells, 2)
+                cells = cells.reshape(1, self.dim[0] * self.dim[1])
+                cells = cells.tolist()[0]
             colors = []
             for cell in cells:
                 colors.append(cell.color)
@@ -212,5 +218,4 @@ class Cube:
                     i += 1
                 res += '\n'
             res += '\n'
-
         return res
