@@ -1,9 +1,12 @@
 from Cube.cube import Cube
+from Cube.Solver import solver
 import time
 
-cube = Cube()
 start = time.time()
-cube.sequence('R U R` U` R` F R2 U` R` U` R U R` F`')
+for i in range(100):
+    cube = Cube()
+    cube.scramble(50)
+    solver.solve(cube)
+    print(f'solved cube: {i}')
 end = time.time()
-print(cube)
 print(f"time: {(end - start)} seconds")

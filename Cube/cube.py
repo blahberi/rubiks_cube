@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from Cube.cell import Cell
 
 class MagicalMatrix:
@@ -43,7 +44,7 @@ class Cube:
     def __init__(self, scramble=None):
         self.magical_matrix = MagicalMatrix()
         self.cells = []
-        self.dim = (3 , 3)
+        self.dim = (2, 2)
         self.positionNums = []
         self.__build_cube(scramble)
         self.colorToNorm = {'U': (0, -1, 0), 'L': (-1, 0, 0), 'F': (0, 0, -1), 'R': (1, 0, 0), 'B': (0, 0, 1), 'D': (0, 1, 0)}
@@ -134,6 +135,40 @@ class Cube:
                         res.append(cell)
         return res
 
+    def get_side_in_matrix(self, side):
+        res = ''
+        cells = self.__get_side(side)
+        if side == 'B':
+            cells = np.array(cells)
+            cells = cells.reshape(self.dim[0], self.dim[1])
+            cells = np.flip(cells, 1)
+            cells = cells.reshape(1, self.dim[0] * self.dim[1])
+            cells = cells.tolist()[0]
+        if side == 'U':
+            cells = np.array(cells)
+            cells = cells.reshape(self.dim[0], self.dim[1])
+            cells = np.flip(cells, 0)
+            cells = cells.reshape(1, self.dim[0] * self.dim[1])
+            cells = cells.tolist()[0]
+        if side == 'L':
+            cells = np.array(cells)
+            cells = cells.reshape(self.dim[0], self.dim[1])
+            cells = np.flip(cells, 1)
+            cells = cells.reshape(1, self.dim[0] * self.dim[1])
+            cells = cells.tolist()[0]
+        colors = []
+        for cell in cells:
+            colors.append(cell.color)
+        i = 0
+        for a in range(self.dim[0]):
+            for b in range(self.dim[1]):
+                res += colors[i]
+                res += " "
+                i += 1
+            res += '\n'
+
+        return res
+
     def __get_solved_scramble(self):
         res = ''
         sides = ['w', 'o', 'g', 'r', 'b', 'y']
@@ -196,6 +231,22 @@ class Cube:
             else:
                 moved = False
 
+    def scramble(self, size=20):
+        sides = ['U', 'L', 'F', 'R', 'B', 'D']
+        scramble = ''
+        for i in range(size):
+            addedMove = random.choice(sides)
+            rand = random.randint(1, 5)
+            if rand in (1, 2):
+                pass
+            elif rand in (3, 4):
+                addedMove += '`'
+            else:
+                addedMove += '2'
+            scramble += addedMove
+        self.sequence(scramble)
+
+
     def __str__(self):
         res = ''
         sides = ['U', 'L', 'F', 'R', 'B', 'D']
@@ -204,7 +255,19 @@ class Cube:
             if side == 'B':
                 cells = np.array(cells)
                 cells = cells.reshape(self.dim[0], self.dim[1])
-                cells = np.rot90(cells, 2)
+                cells = np.flip(cells, 1)
+                cells = cells.reshape(1, self.dim[0] * self.dim[1])
+                cells = cells.tolist()[0]
+            if side == 'U':
+                cells = np.array(cells)
+                cells = cells.reshape(self.dim[0], self.dim[1])
+                cells = np.flip(cells, 0)
+                cells = cells.reshape(1, self.dim[0] * self.dim[1])
+                cells = cells.tolist()[0]
+            if side == 'L':
+                cells = np.array(cells)
+                cells = cells.reshape(self.dim[0], self.dim[1])
+                cells = np.flip(cells, 1)
                 cells = cells.reshape(1, self.dim[0] * self.dim[1])
                 cells = cells.tolist()[0]
             colors = []
