@@ -44,7 +44,7 @@ class Cube:
     def __init__(self, scramble=None):
         self.magical_matrix = MagicalMatrix()
         self.cells = []
-        self.dim = (2, 2)
+        self.dim = (3, 3)
         self.positionNums = []
         self.__build_cube(scramble)
         self.colorToNorm = {'U': (0, -1, 0), 'L': (-1, 0, 0), 'F': (0, 0, -1), 'R': (1, 0, 0), 'B': (0, 0, 1), 'D': (0, 1, 0)}
@@ -136,36 +136,23 @@ class Cube:
         return res
 
     def get_side_in_matrix(self, side):
-        res = ''
+        res = []
         cells = self.__get_side(side)
-        if side == 'B':
+        if side in ('B', 'U', 'L'):
+            i = 1
+            if side == 'U':
+                i = 0
             cells = np.array(cells)
             cells = cells.reshape(self.dim[0], self.dim[1])
-            cells = np.flip(cells, 1)
-            cells = cells.reshape(1, self.dim[0] * self.dim[1])
-            cells = cells.tolist()[0]
-        if side == 'U':
-            cells = np.array(cells)
-            cells = cells.reshape(self.dim[0], self.dim[1])
-            cells = np.flip(cells, 0)
-            cells = cells.reshape(1, self.dim[0] * self.dim[1])
-            cells = cells.tolist()[0]
-        if side == 'L':
-            cells = np.array(cells)
-            cells = cells.reshape(self.dim[0], self.dim[1])
-            cells = np.flip(cells, 1)
+            cells = np.flip(cells, i)
             cells = cells.reshape(1, self.dim[0] * self.dim[1])
             cells = cells.tolist()[0]
         colors = []
         for cell in cells:
             colors.append(cell.color)
         i = 0
-        for a in range(self.dim[0]):
-            for b in range(self.dim[1]):
-                res += colors[i]
-                res += " "
-                i += 1
-            res += '\n'
+        res = np.array(colors)
+        res = res.reshape(self.dim[0], self.dim[1])
 
         return res
 
@@ -178,21 +165,42 @@ class Cube:
                 res += side
         return res
 
+    def move(self, direction):
+        opposite = {'r': 'l', 'l': 'r'}
+        self.turn('U', direction)
+        self.turn('M', direction)
+        self.turn('D', opposite[direction])
+
     def turn(self, side, direction):
         cells = []
+        #smallest cordinates possible
         negative = self.positionsNums[0]
+        #biggest cordinates possible
         positive = self.positionsNums[-1]
-        sidesPoint = {'U': (1, negative), 'L': (0, negative), 'F': (2, negative), 'R': (0, positive), 'B': (2, positive), 'D': (1, positive)}
+        mid = 0
+        #the first number in the tuple means which axis on the cordinates are we going to compare
+        sidesPoint = {'U': (1, negative), 'L': (0, negative), 'F': (2, negative), 'R': (0, positive), 'B': (2, positive), 'D': (1, positive), 'M': (1, mid)}
 
         for cell in self.cells:
             if cell.point[sidesPoint[side][0]] == sidesPoint[side][1]:
                 cells.append(cell)
 
-        sideCells = self.__get_side(side)
+        sideCells = []
+        if side != 'M':
+            sideCells = self.__get_side(side)
         beltCells = []
         for cell in cells:
             if cell not in sideCells:
                 beltCells.append(cell)
+
+        if side == 'M':
+            if self.dim != (3, 3):
+                return
+            for cell in cells:
+                if cell in beltCells:
+                    cell.point = tuple(np.dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
+                    cell.norm = tuple(np.dot(list(cell.norm), self.magical_matrix.get_matrix(side, direction)))
+            return
 
         for cell in cells:
             cell.point = tuple(np.dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
@@ -243,31 +251,22 @@ class Cube:
                 addedMove += '`'
             else:
                 addedMove += '2'
-            scramble += addedMove
+            scramble += addedMove + ' '
         self.sequence(scramble)
-
+        return scramble
 
     def __str__(self):
         res = ''
         sides = ['U', 'L', 'F', 'R', 'B', 'D']
         for side in sides:
             cells = self.__get_side(side)
-            if side == 'B':
+            if side in ('B', 'U', 'L'):
+                i = 1
+                if side == 'U':
+                    i = 0
                 cells = np.array(cells)
                 cells = cells.reshape(self.dim[0], self.dim[1])
-                cells = np.flip(cells, 1)
-                cells = cells.reshape(1, self.dim[0] * self.dim[1])
-                cells = cells.tolist()[0]
-            if side == 'U':
-                cells = np.array(cells)
-                cells = cells.reshape(self.dim[0], self.dim[1])
-                cells = np.flip(cells, 0)
-                cells = cells.reshape(1, self.dim[0] * self.dim[1])
-                cells = cells.tolist()[0]
-            if side == 'L':
-                cells = np.array(cells)
-                cells = cells.reshape(self.dim[0], self.dim[1])
-                cells = np.flip(cells, 1)
+                cells = np.flip(cells, i)
                 cells = cells.reshape(1, self.dim[0] * self.dim[1])
                 cells = cells.tolist()[0]
             colors = []
