@@ -1,8 +1,8 @@
-import numpy as np
 from Cube.cube import Cube
 
 
 def __solve_cross(cube):
+    res = ''
     edges = __get_yellow_edges(cube)
     b = 0
     for edge in edges:
@@ -12,15 +12,19 @@ def __solve_cross(cube):
                 if edge.norm[2] == -1:
                     if edge.point[0] == 1:
                         cube.sequence('R U R`')
+                        res += 'R U R` '
 
                     elif edge.point[0] == -1:
                         cube.sequence('L` U` L')
+                        res += 'L` U` L '
                     for a in range(i):
                         cube.turn('M', 'l')
+                        res += 'M` '
 
                     break
                 else:
                     cube.turn('M', 'r')
+                    res += 'M '
                     i += 1
 
         elif edge.norm[1] == -1:
@@ -29,25 +33,31 @@ def __solve_cross(cube):
                     break
                 else:
                     cube.turn('U', 'r')
+                    res += 'U '
 
         elif edge.point[1] == -1:
             while True:
                 if edge.norm[2] == -1:
                     cube.sequence('F R U` R` F` U2')
+                    res += 'F R U` R` F` U2 '
                     break
                 else:
                     cube.turn('U', 'r')
+                    res += 'U '
 
         elif edge.norm[1] == 1:
             i = 0
             while True:
                 if edge.point[2] == -1:
                     cube.sequence('F2')
+                    res += 'F2 '
                     for a in range(i):
                         cube.turn('D', 'l')
+                        res += 'D` '
                     break
                 else:
                     cube.turn('D', 'r')
+                    res += 'D '
                     i += 1
 
         elif edge.point[1] == 1:
@@ -55,11 +65,14 @@ def __solve_cross(cube):
             while True:
                 if edge.norm[2] == -1:
                     cube.sequence('F` R U` R` F U2')
+                    res += 'F` R U` R` F U2 '
                     for a in range(i):
                         cube.turn('D', 'l')
+                        res += 'D` '
                     break
                 else:
                     cube.turn('D', 'r')
+                    res += 'D '
                     i += 1
 
         edgeColor = __get_neighbors(cube, edge)[0].color
@@ -68,12 +81,17 @@ def __solve_cross(cube):
 
         for a in range(tuple(colors_to_turns).index(edgeColor)):
             cube.turn('U', 'r')
+            res += 'U '
         for a in range(2):
             cube.turn(colors_to_turns[edgeColor], 'r')
+            res += colors_to_turns[edgeColor] + ' '
         b += 1
+
+    return res
 
 
 def __solve_corners(cube):
+    res = ''
     norms = {'u': (0, -1, 0), 'r': (1, 0, 0), 'd': (0, 1, 0), 'l': (-1, 0, 0), 'b': (0, 0, 1), 'f': (0, 0, -1)}
     corners = __get_yellow_corners(cube)
     solved = []
@@ -92,14 +110,18 @@ def __solve_corners(cube):
                 else:
                     i += 1
                     cube.turn('D', 'r')
+                    res += 'D '
 
             if cornerSide == 'r':
                 cube.sequence('R U R`')
+                res += 'R U R` '
             if cornerSide == 'l':
                 cube.sequence('L` U` L')
+                res += 'L` U` L '
 
             for a in range(i):
                 cube.turn('D', 'l')
+                res += 'D` '
 
 
         if corner.norm == norms['u']:
@@ -114,6 +136,7 @@ def __solve_corners(cube):
                     cornerSide = 'l'
                 else:
                     cube.turn('U', 'r')
+                    res += 'U '
 
             howMuchToTurn = ['g', 'o', 'b', 'r']
             neighbors = __get_neighbors(cube, corner)
@@ -124,14 +147,18 @@ def __solve_corners(cube):
 
             for i in range(howMuchToTurn.index(sideNeighbor.color)):
                 cube.turn('D', 'r')
+                res += 'D '
             if cornerSide == 'r':
                 for i in range(3):
                     cube.sequence('U R U` R`')
+                    res += 'U R U` R` '
             elif cornerSide == 'l':
                 for i in range(3):
                     cube.sequence('U` L` U L')
+                    res += 'U` L` U L '
             for i in range(howMuchToTurn.index(sideNeighbor.color)):
                 cube.turn('D', 'l')
+                res += 'D` '
             solved.append(corner)
 
         if corner not in solved:
@@ -143,14 +170,18 @@ def __solve_corners(cube):
                         if corner.point == (1, 1, -1):
                             on = False
                             cube.sequence('F` U` F U')
+                            res += 'F` U` F U '
                         elif corner.point == (-1, 1, -1):
                             on = False
                             cube.sequence('F U F` U`')
+                            res += 'F U F` U` '
                     else:
                         cube.turn('D', 'r')
+                        res += 'D '
                         i += 1
                 for a in range(i):
                     cube.turn('D', 'l')
+                    res += 'D` '
 
             cornerSide = ''
             on = True
@@ -164,6 +195,8 @@ def __solve_corners(cube):
                         cornerSide = 'l'
                 else:
                     cube.turn('U', 'r')
+                    res += 'U '
+
             howMuchToTurn = ['g', 'o', 'b', 'r']
             neighbors = __get_neighbors(cube, corner)
             topNeighbor = None
@@ -172,16 +205,23 @@ def __solve_corners(cube):
                     topNeighbor = neighbor
             for i in range(howMuchToTurn.index(topNeighbor.color)):
                 cube.turn('D', 'r')
+                res += 'D '
             if cornerSide == 'r':
                 cube.sequence('U R U` R`')
+                res += 'U R U` R` '
             elif cornerSide == 'l':
                 cube.sequence('U` L` U L')
+                res += 'U` L` U L '
             for i in range(howMuchToTurn.index(topNeighbor.color)):
                 cube.turn('D', 'l')
+                res += 'D` '
             solved.append(corner)
+
+    return res
 
 
 def __solve_second_layer(cube):
+    res = ''
     edges = __get_all_edges(cube)
     #i need to do that 2 times because it does not remove all of them in one go
     #idk y i will check later
@@ -208,13 +248,17 @@ def __solve_second_layer(cube):
                 if edge.norm[2] == -1:
                     if edge.point[0] == 1:
                         cube.sequence("U R U` R` U` F` U F")
+                        res += 'U R U` R` U` F` U F '
                     elif edge.point[0] == -1:
                         cube.sequence("U` L` U L U F U` F`")
+                        res += 'U` L` U L U F U` F` '
                     for a in range(i):
                         cube.turn('M', 'l')
+                        res += 'M` '
                     break
                 else:
                     cube.turn('M', 'r')
+                    res += 'M '
                     i += 1
 
         if edge.point[1] == -1:
@@ -223,6 +267,7 @@ def __solve_second_layer(cube):
                     break
                 else:
                     cube.turn('U', 'r')
+                    res += 'U '
             color1 = edge.color
             color2 = __get_neighbors(cube, edge)[0].color
             if edge.norm[1] == -1:
@@ -233,21 +278,28 @@ def __solve_second_layer(cube):
             colors_to_turns = {'g': ('r', 'o'), 'o': ('g', 'b'), 'b': ('o', 'r'), 'r': ('b', 'g')}
             for i in range(tuple(colors_to_turns).index(color1)):
                 cube.move('l')
+                res += 'mL '
                 cube.turn('U', 'r')
+                res += 'U '
 
             if color2 == colors_to_turns[color1][0]:
                 cube.sequence("U R U` R` U` F` U F")
+                res += 'U R U` R` U` F` U F '
             elif color2 == colors_to_turns[color1][1]:
                 cube.sequence("U` L` U L U F U` F`")
+                res += 'U` L` U L U F U` F` '
             for i in range(tuple(colors_to_turns).index(color1)):
                 cube.move('r')
+                res += 'mR '
 
             edges.remove(__get_neighbors(cube, edge)[0])
             b += 1
 
+    return res
 
 
 def __oll_step_2(cube):
+    res = ''
     side = __get_side_corners_map(cube, 'U', 'w')
 
     no_corners = '# # \n' \
@@ -270,17 +322,21 @@ def __oll_step_2(cube):
     while True:
         if side in cases:
             cube.sequence('R U R` U R U2 R`')
+            res += 'R U R` U R U2 R` '
             side = __get_side_corners_map(cube, 'U', 'w')
 
         elif side == solved:
-            return
+            return res
 
         else:
             cube.turn('U', 'r')
+            res += 'U '
             side = __get_side_corners_map(cube, 'U', 'w')
 
 
+
 def __oll_step_1(cube):
+    res = ''
     side = __get_side_edges_map(cube, 'U', 'w')
 
     case1 = '# w # \n' \
@@ -304,15 +360,18 @@ def __oll_step_1(cube):
     while True:
         if side in cases:
             cube.sequence("F R U R` U` F`")
+            res += 'F R U R` U` F` '
             side = __get_side_edges_map(cube, 'U', 'w')
         elif side == solved:
-            return
+            return res
         else:
             cube.turn('U', 'r')
+            res += 'U '
             side = __get_side_edges_map(cube, 'U', 'w')
 
 
 def __pll_step_1(cube):
+    res = ''
     solvedCube = Cube()
     side = __get_side_corners(cube, 'L')
     didTPerm = False
@@ -324,9 +383,10 @@ def __pll_step_1(cube):
             if __get_side_corners(cube, currentSide) != __get_side_corners(solvedCube, currentSide):
                 done = False
         if done:
-            return
+            return res
         else:
             cube.turn('U', 'r')
+            res += 'U '
 
     for a in range(4):
         isTperm = True
@@ -342,14 +402,17 @@ def __pll_step_1(cube):
 
         if isTperm:
             cube.sequence('R U R` U` R` F R2 U` R` U` R U R` F`')
+            res += 'R U R` U` R` F R2 U` R` U` R U R` F` '
             didTPerm = True
             break
         else:
             cube.turn('U', 'r')
+            res += 'U '
             side = __get_side_corners(cube, 'L')
 
     if not didTPerm:
         cube.sequence('F R U` R` U` R U R` F` R U R` U` R` F R F`')
+        res += 'F R U` R` U` R U R` F` R U R` U` R` F R F` '
 
     while True:
         done = True
@@ -357,20 +420,23 @@ def __pll_step_1(cube):
             if __get_side_corners(cube, side) != __get_side_corners(solvedCube, side):
                 done = False
         if done:
-            return
+            return res
         else:
             cube.turn('U', 'r')
+            res += 'U '
 
 
 def __pll_step_2(cube):
+    res = ''
     side = cube.get_side_in_matrix('B')
     solvedCube = Cube()
 
     for i in range(4):
         if str(cube) == str(solvedCube):
-            return
+            return res
         else:
             cube.turn('U', 'r')
+            res += 'U '
 
     while True:
         side = cube.get_side_in_matrix('B')
@@ -383,13 +449,16 @@ def __pll_step_2(cube):
                 break
             else:
                 cube.turn('U', 'r')
+                res += 'U '
                 side = cube.get_side_in_matrix('B')
         cube.sequence('R2 U R U R` U` R` U` R` U R`')
+        res += 'R2 U R U R` U` R` U` R` U R` '
         for i in range(4):
             if str(cube) == str(solvedCube):
-                return
+                return res
             else:
                 cube.turn('U', 'r')
+                res += 'U '
 
 
 def __get_yellow_edges(cube):
@@ -503,13 +572,67 @@ def __get_side_edges_map(cube, side, color):
 
 
 def __solve_3x3(cube):
-    __solve_cross(cube)
-    __solve_corners(cube)
-    __solve_second_layer(cube)
-    __oll_step_1(cube)
-    __oll_step_2(cube)
-    __pll_step_1(cube)
-    __pll_step_2(cube)
+    res = ''
+    res += __solve_cross(cube)
+    res += __solve_corners(cube)
+    res += __solve_second_layer(cube)
+    res += __oll_step_1(cube)
+    res += __oll_step_2(cube)
+    res += __pll_step_1(cube)
+    res += __pll_step_2(cube)
+    return res
+
+
+def __optimize_sequence(sequence):
+    res = ''
+    sequence = sequence.split()
+    i = 0
+    while i <= len(sequence) - 1:
+        repeat = 0
+        iterator = 0
+        isMove = False
+        while True:
+            if i + iterator <= len(sequence) - 1:
+                if list(sequence[i])[0] == list(sequence[i + iterator])[0]:
+                    if list(sequence[i])[0] == 'm':
+                        isMove = True
+                        break
+                    if len(list(sequence[i + iterator])) == 2:
+                        if list(sequence[i + iterator])[1] == '`':
+                            repeat -= 1
+                        elif list(sequence[i + iterator])[1] == '2':
+                            repeat += 2
+                    else:
+                        repeat += 1
+                    iterator += 1
+                else:
+                    break
+            else:
+                break
+        if not isMove:
+            if repeat >= 0:
+                repeat = repeat % 4
+            else:
+                repeat = repeat % -4
+
+            if repeat == 0:
+                pass
+            elif repeat == 1 or repeat == -3:
+                res += list(sequence[i])[0] + ' '
+            elif abs(repeat) == 2:
+                res += list(sequence[i])[0] + '2 '
+            elif repeat == 3 or repeat == -1:
+                res += list(sequence[i])[0] + '` '
+
+            i += iterator + 1
+        else:
+            res += sequence[i] + ' '
+            i += 1
+
+    return res
+
+
+
 
 
 def __solve_2x2(cube):
@@ -522,4 +645,4 @@ def solve(cube):
     if cube.dim == (2, 2):
         __solve_2x2(cube)
     elif cube.dim == (3, 3):
-        __solve_3x3(cube)
+        return __solve_3x3(cube)
