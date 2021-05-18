@@ -2,42 +2,56 @@ import random
 from Cube.cell import Cell
 
 
-class _MagicalMatrix:
+class _rotator:
     def __init__(self):
-        self.magical_matrix = [
-            [
-                [[0, 0, 1], [0, 1, 0], [-1, 0, 0]],
-                [[0, 0, -1], [0, 1, 0], [1, 0, 0]]
+        # first number in the tuple means which axis in the order {0:'x', 1:'y', 2:'z'}
+        # second number in the tuple means what to multiply that axis by
+        # None means that u dont have to multiply it by anything
+        self.magical_rotator = [
+            [# Up
+                [(2, None), (1, None), (0, -1)],
+                [(2, -1), (1, None), (0, None)]
             ],
-            [
-                [[1, 0, 0], [0, 0, -1], [0, 1, 0]],
-                [[1, 0, 0], [0, 0, 1], [0, -1, 0]]
+            [# Left
+                [(0, None), (2, -1), (1, None)],
+                [(0, None), (2, None), (1, -1)]
             ],
-            [
-                [[0, -1, 0], [1, 0, 0], [0, 0, 1]],
-                [[0, 1, 0], [-1, 0, 0], [0, 0, 1]]
+            [# Front
+                [(1, -1), (0, None), (2, None)],
+                [(1, None), (0, -1), (2, None)]
             ],
-            [
-                [[1, 0, 0], [0, 0, 1], [0, -1, 0]],
-                [[1, 0, 0], [0, 0, -1], [0, 1, 0]]
+            [# Right
+                [(0, None), (2, None), (1, -1)],
+                [(0, None), (2, -1), (1, None)]
             ],
-            [
-                [[0, 1, 0], [-1, 0, 0], [0, 0, 1]],
-                [[0, -1, 0], [1, 0, 0], [0, 0, 1]]
+            [# Back
+                [(1, None), (0, -1), (2, None)],
+                [(1, -1), (0, None), (2, None)]
             ],
-            [
-                [[0, 0, -1], [0, 1, 0], [1, 0, 0]],
-                [[0, 0, 1], [0, 1, 0], [-1, 0, 0]]
+            [# Down
+                [(2, -1), (1, None), (0, None)],
+                [(2, None), (1, None), (0, -1)]
             ]]
 
-    def get_matrix(self, move, direction):
+    def get_roator(self, move, direction):
         moveInt = 0
-        directions = {'r': 1, 'l': 0}
+        directions = {'r': 0, 'l': 1}
         moves = ['U', 'L', 'F', 'R', 'B', 'D']
         for m in moves:
             if m == move:
                 moveInt = moves.index(m)
-        return self.magical_matrix[moveInt][directions[direction]]
+        return self.magical_rotator[moveInt][directions[direction]]
+
+    def rotate(self, cords, move, direction):
+        rotator = self.get_roator(move, direction)
+        res = []
+        for operation in rotator:
+            if operation[1] != None:
+                res.append(cords[operation[0]] * -1)
+            else:
+                res.append(cords[operation[0]])
+        return tuple(res)
+
 
 
 def reshape(mat, dim):
@@ -67,19 +81,9 @@ def mirror(mat, axis=1):
             mat[-1][x] = temp
 
 
-def dot(mat1, mat2):
-    res = []
-    for i in range(len(mat2)):
-        res.append(0)
-    for y in range(len(mat2)):
-        for x in range(len(mat1)):
-            res[y] += mat1[x] * mat2[x][y]
-    return res
-
-
 class Cube:
     def __init__(self, scramble=None):
-        self.magical_matrix = _MagicalMatrix()
+        self.rotator = _rotator()
         self.cells = []
         self.dim = (3, 3)
         self.positionNums = []
@@ -232,14 +236,14 @@ class Cube:
                 return
             for cell in cells:
                 if cell in beltCells:
-                    cell.point = tuple(dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
-                    cell.norm = tuple(dot(list(cell.norm), self.magical_matrix.get_matrix(side, direction)))
+                    cell.point = self.rotator.rotate(cell.point, side, direction)
+                    cell.norm = self.rotator.rotate(cell.norm, side, direction)
             return
 
         for cell in cells:
-            cell.point = tuple(dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
+            cell.point = self.rotator.rotate(cell.point, side, direction)
             if cell in beltCells:
-                cell.norm = tuple(dot(list(cell.norm), self.magical_matrix.get_matrix(side, direction)))
+                cell.norm = self.rotator.rotate(cell.norm, side, direction)
 
     def sequence(self, sequence):
         """
