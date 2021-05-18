@@ -599,18 +599,6 @@ def __get_side_edges_map(cube, side, color):
     return res
 
 
-def __solve_3x3(cube):
-    res = ''
-    res += __solve_cross(cube)
-    res += __solve_corners(cube)
-    res += __solve_second_layer(cube)
-    res += __oll_step_1(cube)
-    res += __oll_step_2(cube)
-    res += __pll_step_1(cube)
-    res += __pll_step_2(cube)
-    return __optimize_sequence(res)
-
-
 def __optimize_sequence(sequence):
     res = ''
     sequence = sequence.split()
@@ -658,6 +646,18 @@ def __optimize_sequence(sequence):
             i += 1
 
     return res
+
+
+def __solve_3x3(cube):
+    res = ''
+    res += __solve_cross(cube)
+    res += __solve_corners(cube)
+    res += __solve_second_layer(cube)
+    res += __oll_step_1(cube)
+    res += __oll_step_2(cube)
+    res += __pll_step_1(cube)
+    res += __pll_step_2(cube)
+    return __optimize_sequence(res)
 
 
 def __solve_2x2(cube):

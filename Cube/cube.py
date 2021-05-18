@@ -1,10 +1,10 @@
-import numpy as np
 import random
 from Cube.cell import Cell
 
-class MagicalMatrix:
+
+class _MagicalMatrix:
     def __init__(self):
-        self.magical_matrix = np.array([
+        self.magical_matrix = [
             [
                 [[0, 0, 1], [0, 1, 0], [-1, 0, 0]],
                 [[0, 0, -1], [0, 1, 0], [1, 0, 0]]
@@ -28,7 +28,7 @@ class MagicalMatrix:
             [
                 [[0, 0, -1], [0, 1, 0], [1, 0, 0]],
                 [[0, 0, 1], [0, 1, 0], [-1, 0, 0]]
-            ]])
+            ]]
 
     def get_matrix(self, move, direction):
         moveInt = 0
@@ -40,9 +40,46 @@ class MagicalMatrix:
         return self.magical_matrix[moveInt][directions[direction]]
 
 
+def reshape(mat, dim):
+    res = []
+    if isinstance(mat[0], list):
+        for y in range(len(mat)):
+            for x in range(len(mat[y])):
+                res.append(mat[y][x])
+    else:
+        for y in range(dim[0]):
+            res.append([])
+            for x in range(dim[1]):
+                res[y].append(mat[y * (dim[0]) + x])
+    return res
+
+
+def mirror(mat, axis=1):
+    if axis == 1:
+        for y in range(len(mat)):
+            temp = (mat[y][0])
+            mat[y][0] = mat[y][-1]
+            mat[y][-1] = temp
+    if axis == 0:
+        for x in range(len(mat[0])):
+            temp = (mat[0][x])
+            mat[0][x] = mat[-1][x]
+            mat[-1][x] = temp
+
+
+def dot(mat1, mat2):
+    res = []
+    for i in range(len(mat2)):
+        res.append(0)
+    for y in range(len(mat2)):
+        for x in range(len(mat1)):
+            res[y] += mat1[x] * mat2[x][y]
+    return res
+
+
 class Cube:
     def __init__(self, scramble=None):
-        self.magical_matrix = MagicalMatrix()
+        self.magical_matrix = _MagicalMatrix()
         self.cells = []
         self.dim = (3, 3)
         self.positionNums = []
@@ -142,17 +179,14 @@ class Cube:
             i = 1
             if side == 'U':
                 i = 0
-            cells = np.array(cells)
-            cells = cells.reshape(self.dim[0], self.dim[1])
-            cells = np.flip(cells, i)
-            cells = cells.reshape(1, self.dim[0] * self.dim[1])
-            cells = cells.tolist()[0]
+            cells = reshape(cells, (self.dim[0], self.dim[1]))
+            mirror(cells, i)
+            cells = reshape(cells, (1, self.dim[0] * self.dim[1]))
         colors = []
         for cell in cells:
             colors.append(cell.color)
-        i = 0
-        res = np.array(colors)
-        res = res.reshape(self.dim[0], self.dim[1])
+        res = colors
+        res = reshape(res, (self.dim[0], self.dim[1]))
 
         return res
 
@@ -198,14 +232,14 @@ class Cube:
                 return
             for cell in cells:
                 if cell in beltCells:
-                    cell.point = tuple(np.dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
-                    cell.norm = tuple(np.dot(list(cell.norm), self.magical_matrix.get_matrix(side, direction)))
+                    cell.point = tuple(dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
+                    cell.norm = tuple(dot(list(cell.norm), self.magical_matrix.get_matrix(side, direction)))
             return
 
         for cell in cells:
-            cell.point = tuple(np.dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
+            cell.point = tuple(dot(list(cell.point), self.magical_matrix.get_matrix(side, direction)))
             if cell in beltCells:
-                cell.norm = tuple(np.dot(list(cell.norm), self.magical_matrix.get_matrix(side, direction)))
+                cell.norm = tuple(dot(list(cell.norm), self.magical_matrix.get_matrix(side, direction)))
 
     def sequence(self, sequence):
         """
@@ -264,11 +298,9 @@ class Cube:
                 i = 1
                 if side == 'U':
                     i = 0
-                cells = np.array(cells)
-                cells = cells.reshape(self.dim[0], self.dim[1])
-                cells = np.flip(cells, i)
-                cells = cells.reshape(1, self.dim[0] * self.dim[1])
-                cells = cells.tolist()[0]
+                cells = reshape(cells, (self.dim[0], self.dim[1]))
+                mirror(cells, i)
+                cells = reshape(cells, (1, self.dim[0] * self.dim[1]))
             colors = []
             for cell in cells:
                 colors.append(cell.color)

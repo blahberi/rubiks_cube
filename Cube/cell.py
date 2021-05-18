@@ -3,3 +3,6 @@ class Cell:
         self.point = point
         self.norm = norm
         self.color = color
+
+    def __str__(self):
+        return self.color
