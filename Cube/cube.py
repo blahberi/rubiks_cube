@@ -6,31 +6,30 @@ class _rotator:
     def __init__(self):
         # first number in the tuple means which axis in the order {0:'x', 1:'y', 2:'z'}
         # second number in the tuple means what to multiply that axis by
-        # None means that u dont have to multiply it by anything
         self.magical_rotator = [
             [# Up
-                [(2, None), (1, None), (0, -1)],
-                [(2, -1), (1, None), (0, None)]
+                [(2, 1), (1, 1), (0, -1)],
+                [(2, -1), (1, 1), (0, 1)]
             ],
             [# Left
-                [(0, None), (2, -1), (1, None)],
-                [(0, None), (2, None), (1, -1)]
+                [(0, 1), (2, -1), (1, 1)],
+                [(0, 1), (2, 1), (1, -1)]
             ],
             [# Front
-                [(1, -1), (0, None), (2, None)],
-                [(1, None), (0, -1), (2, None)]
+                [(1, -1), (0, 1), (2, 1)],
+                [(1, 1), (0, -1), (2, 1)]
             ],
             [# Right
-                [(0, None), (2, None), (1, -1)],
-                [(0, None), (2, -1), (1, None)]
+                [(0, 1), (2, 1), (1, -1)],
+                [(0, 1), (2, -1), (1, 1)]
             ],
             [# Back
-                [(1, None), (0, -1), (2, None)],
-                [(1, -1), (0, None), (2, None)]
+                [(1, 1), (0, -1), (2, 1)],
+                [(1, -1), (0, 1), (2, 1)]
             ],
             [# Down
-                [(2, -1), (1, None), (0, None)],
-                [(2, None), (1, None), (0, -1)]
+                [(2, -1), (1, 1), (0, 1)],
+                [(2, 1), (1, 1), (0, -1)]
             ]]
 
     def get_roator(self, move, direction):
@@ -46,10 +45,7 @@ class _rotator:
         rotator = self.get_roator(move, direction)
         res = []
         for operation in rotator:
-            if operation[1] != None:
-                res.append(cords[operation[0]] * -1)
-            else:
-                res.append(cords[operation[0]])
+            res.append(cords[operation[0]] * operation[1])
         return tuple(res)
 
 
