@@ -40,7 +40,7 @@ as you guessed it, beginners use this method to solve a cube
 ### how does beginners method work
 beginners method solves the cube layer by layer
 
-you first solve a cross on the bottom layer, then you insert the corners of the bottom layer,
-then you use user algorithms to insert pieces into the second layer,
-after that you use more algorithms to solve a cross on the top side and then you solve it entirely.
-finally, you use even more algorithms to solve the top layer corners and then edges.
+- you first solve a cross on the bottom layer, then you insert the corners of the bottom layer
+- then you use user algorithms to insert pieces into the second layer
+- after that you use more algorithms to solve a cross on the top side and then you solve it entirely
+- finally, you use even more algorithms to solve the top layer corners and then edges.
