@@ -1,13 +1,16 @@
 # rubik's cube
+
+---
 a program that can solve a rubik's cube
 
+---
 ### how to install
 `git clone https://github.com/blahberi/rubiks_cube.git`
 
 then all you need is in the Cube folder,
 so take it out and put it in your project
 
-
+---
 ### how to use
 ```python
 from Cube.cube import Cube # import cube
@@ -63,15 +66,19 @@ y y y
 ```
 so this is a solved cube with white on top and green on front
 
-
+---
 
 ### about this project
 I created this project for fun and to learn more programming
+
+---
 
 ### how does it work
 the program uses the "beginner's method" to solve a cube
 the beginner's method is the easiest way to solve a cube
 as you guessed it, beginners use this method to solve a cube
+
+---
 
 ### how does beginners method work
 beginners method solves the cube layer by layer
@@ -80,3 +87,10 @@ beginners method solves the cube layer by layer
 - then you use user algorithms to insert pieces into the second layer
 - after that you use more algorithms to solve a cross on the top side and then you solve it entirely
 - finally, you use even more algorithms to solve the top layer corners and then edges.
+
+---
+### currently in work
+#### the priority is in the same order
+- show cube with openGL
+- make algorithm more efficient
+- add another algorithm that solves the cube with a shorter solution
