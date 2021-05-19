@@ -25,7 +25,43 @@ solution = solver.solve(cube) # solver.solve() returns a string of the solution
 scrambleSize = 10
 cube.scramble(scrambleSize) # you can decide how complex the scramble will be. default of 20
 ```
+```python
+print(cube) # you can also get the string of a cube
+```
+getting the string of a cube will return this
+each square of colors is a side which goes in the worder
+- top
+- left
+- front
+- right
+- back
+- bottom
+```
+w w w 
+w w w 
+w w w 
 
+o o o 
+o o o 
+o o o 
+
+g g g 
+g g g 
+g g g 
+
+r r r 
+r r r 
+r r r 
+
+b b b 
+b b b 
+b b b 
+
+y y y 
+y y y 
+y y y 
+```
+so this is a solved cube with white on top and green on front
 
 
 
