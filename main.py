@@ -1,5 +1,5 @@
 from Cube.cube import Cube
-from Cube.Solver import solver
+from Cube import solver
 import time
 import math
 
