@@ -1,17 +1,17 @@
-# rubik's cube
+# Rubik's cube
 
----
-a program that can solve a rubik's cube
+___
+A program that can solve a rubik's cube
 
----
-### how to install
+___
+### How to install
 `git clone https://github.com/blahberi/rubiks_cube.git`
 
-then all you need is in the Cube folder,
+Then all you need is in the Cube folder,
 so take it out and put it in your project
 
----
-### how to use
+___
+### How to use
 ```python
 from Cube.cube import Cube # import cube
 from Cube import solver # import solver
@@ -31,14 +31,14 @@ cube.scramble(scrambleSize) # you can decide how complex the scramble will be. d
 ```python
 print(cube) # you can also get the string of a cube
 ```
-getting the string of a cube will return this
-each square of colors is a side which goes in the worder
-- top
-- left
-- front
-- right
-- back
-- bottom
+Getting the string of a cube will return this
+each square of colors is a side which goes in the order
+1. Top
+2. Left
+3. Front
+4. Right
+5. Back
+6. Bottom
 ```
 w w w 
 w w w 
@@ -64,33 +64,40 @@ y y y
 y y y 
 y y y 
 ```
-so this is a solved cube with white on top and green on front
 
----
+- w = White
+- o = Orange
+- g = Green
+- r = Red
+- b = Blue
+- y = Yellow
 
-### about this project
+So this is a solved cube with white on top and green on front
+
+___
+
+### About this project
 I created this project for fun and to learn more programming
 
----
+___
 
-### how does it work
-the program uses the "beginner's method" to solve a cube
-the beginner's method is the easiest way to solve a cube
-as you guessed it, beginners use this method to solve a cube
+### How does it work
+The program uses the "beginner's method" to solve a cube.
+The beginner's method is one of the easiest ways to solve a cube.
+as you guessed it, beginners use this method to solve a cube as well.
 
----
+___
 
-### how does beginners method work
-beginners method solves the cube layer by layer
+### How does beginners method work
+Beginners method solves the cube layer by layer.
 
-- you first solve a cross on the bottom layer, then you insert the corners of the bottom layer
-- then you use user algorithms to insert pieces into the second layer
-- after that you use more algorithms to solve a cross on the top side and then you solve it entirely
-- finally, you use even more algorithms to solve the top layer corners and then edges.
+- You first solve a cross on the bottom layer, then you insert the corners of the bottom layer.
+- Then you use user algorithms to insert pieces into the second layer.
+- After that you use more algorithms to solve a cross on the top side and then you solve it entirely.
+- Finally, you use even more algorithms to solve the top layer corners and then edges.
 
----
-### currently in work
-#### the priority is in the same order
-- show cube with openGL
-- make algorithm more efficient
-- add another algorithm that solves the cube with a shorter solution
+___
+### Currently in the work
+- Show cube with openGL.
+- Make algorithm more efficient.
+- Add another algorithm that solves the cube with a shorter solution.
