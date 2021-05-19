@@ -31,7 +31,7 @@ cube.scramble(scrambleSize) # you can decide how complex the scramble will be. d
 ```python
 print(cube) # you can also get the string of a cube
 ```
-Getting the string of a cube will return this
+Getting the string of a cube will return this...
 each square of colors is a side which goes in the order
 1. Top
 2. Left
