@@ -26,6 +26,11 @@ solver.solve(cube) # solve the cube
 scramble = cube.scramble() # Cube.scramble() returns a string of the scramble
 solution = solver.solve(cube) # solver.solve() returns a string of the solution
 ```
+The strings will contain the "algorithm" does that certain action
+I will explain the algorithm in the "How does beginners method work" section.
+
+In the solution string you might encountered by the move "mR" or "mL". <br />
+All that means is completely turn the cube. The "R" or "L" is for L-eft and R-ight.
 ```python
 scrambleSize = 10
 cube.scramble(scrambleSize) # you can decide how complex the scramble will be. default of 20
