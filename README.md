@@ -1,7 +1,7 @@
 # Rubik's cube
 
 ___
-A program that can solve a rubik's cube
+A program that can solve a rubik's cube.
 
 ___
 ### How to install
@@ -10,7 +10,7 @@ git clone https://github.com/blahberi/rubiks_cube.git
 ```
 
 Then all you need is in the Cube folder,
-so take it out and put it in your project
+so take it out and put it in your project.
 
 ___
 ### How to use
@@ -75,29 +75,44 @@ y y y
 - b = Blue
 - y = Yellow
 
-So this is a solved cube with white on top and green on front
+So this is a solved cube with white on top and green on front.
 
 ___
 
 ### About this project
-I created this project for fun and to learn more programming
+I created this project for fun and to learn more about programming.
 
 ___
 
 ### How does it work
 The program uses the "beginner's method" to solve a cube.
 The beginner's method is one of the easiest ways to solve a cube.
-as you guessed it, beginners use this method to solve a cube as well.
+As you guessed it, beginners use this method to solve a cube as well.
 
 ___
 
 ### How does beginners method work
 Beginners method solves the cube layer by layer.
 
-- You first solve a cross on the bottom layer, then you insert the corners of the bottom layer.
-- Then you use user algorithms to insert pieces into the second layer.
-- After that you use more algorithms to solve a cross on the top side and then you solve it entirely.
-- Finally, you use even more algorithms to solve the top layer corners and then edges.
+- You first solve a cross on the bottom layer, then you insert the corners of the bottom layer into the bottom layer.
+- Then you use algorithms to insert pieces into the second layer.
+- After that you use more algorithms to solve a cross on the top side and then you solve the top side entirely.
+- Finally, you use even more algorithms to solve the top layer corners and then top layer edges.
+<br />
+<br />
+
+An algorithem in cubing means a sequence of moves for example: R U R' U'.
+<br /> Each letter means which side to turn(default is clockwise)
+- R - Right side
+- U - Up side
+- L - Down side
+- D - Down side
+- F - Front side
+- B - Back side
+
+There are also different symbols at the end which can mean different things
+- x' means turn counter clockwise
+- x2 means turn 2 times
 
 ___
 ### Currently in the work
