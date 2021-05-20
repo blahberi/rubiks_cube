@@ -275,9 +275,14 @@ class Cube:
 
     def scramble(self, size=20):
         sides = ['U', 'L', 'F', 'R', 'B', 'D']
+        lastAddedMove = ''
         scramble = ''
         for i in range(size):
-            addedMove = random.choice(sides)
+            while True:
+                addedMove = random.choice(sides)
+                if addedMove != lastAddedMove:
+                    break
+            lastAddedMove = addedMove
             rand = random.randint(1, 5)
             if rand in (1, 2):
                 pass

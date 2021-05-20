@@ -21,7 +21,7 @@ cube.scramble() # scramble cube
 solver.solve(cube) # solve the cube
 ```
 ```python
-scramble = cube.scramble() # Cube.scramble returns a string of the scramble
+scramble = cube.scramble() # Cube.scramble() returns a string of the scramble
 solution = solver.solve(cube) # solver.solve() returns a string of the solution
 ```
 ```python
@@ -31,8 +31,9 @@ cube.scramble(scrambleSize) # you can decide how complex the scramble will be. d
 ```python
 print(cube) # you can also get the string of a cube
 ```
-Getting the string of a cube will return this...
-each square of colors is a side which goes in the order
+Getting the string of a cube will return this:
+
+**each square of colors is a side on the cube which goes in the order:**
 1. Top
 2. Left
 3. Front

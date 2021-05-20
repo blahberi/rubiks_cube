@@ -9,7 +9,8 @@ def round_half_up(n, decimals=0):
 
 
 cube = Cube()
-print(f'scramble: {cube.scramble()}, length = 20')
+scramble = cube.scramble()
+print(f'scramble: {scramble}, length = {len(scramble.split())}')
 print('cube after scramble:')
 print(cube)
 start = time.time()
