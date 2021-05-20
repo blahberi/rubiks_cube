@@ -9,6 +9,31 @@ def round_half_up(n, decimals=0):
 
 
 cube = Cube()
+"""
+cube.load_scramble('wrw'
+      'oww'
+      'ryb'
+      
+      'oyg'
+      'gog'
+      'grr'
+      
+      'yry'
+      'ygo'
+      'bbo'
+      
+      'obr'
+      'brw'
+      'wry'
+      
+      'bwb'
+      'obw'
+      'oor'
+      
+      'gbg'
+      'yyg'
+      'ygw')
+"""
 scramble = cube.scramble()
 print(f'scramble: {scramble}, length = {len(scramble.split())}')
 print('cube after scramble:')
@@ -20,3 +45,4 @@ print(f'solution: {alg}, length = {len(alg.split())}')
 print('cube after solve:')
 print(cube)
 print(f"time: {round_half_up((end - start), 3)} seconds")
+input()

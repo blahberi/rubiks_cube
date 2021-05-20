@@ -5,7 +5,9 @@ A program that can solve a rubik's cube
 
 ___
 ### How to install
-`git clone https://github.com/blahberi/rubiks_cube.git`
+```
+git clone https://github.com/blahberi/rubiks_cube.git
+```
 
 Then all you need is in the Cube folder,
 so take it out and put it in your project

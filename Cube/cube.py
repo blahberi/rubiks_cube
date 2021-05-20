@@ -78,17 +78,16 @@ def mirror(mat, axis=1):
 
 
 class Cube:
-    def __init__(self, scramble=None):
+    def __init__(self):
         self.rotator = _rotator()
         self.cells = []
         self.dim = (3, 3)
         self.positionNums = []
-        self.__build_cube(scramble)
+        self.__build_cube()
         self.colorToNorm = {'U': (0, -1, 0), 'L': (-1, 0, 0), 'F': (0, 0, -1), 'R': (1, 0, 0), 'B': (0, 0, 1), 'D': (0, 1, 0)}
 
-    def __build_cube(self, scramble):
-        if not scramble:
-            scramble = self.__get_solved_scramble()
+    def __build_cube(self):
+        scramble = self.__get_solved_scramble()
         sideSize = self.dim[0] * self.dim[1]
         scramble = list(scramble)
 
@@ -171,6 +170,29 @@ class Cube:
                     if cell.point == tuple(point):
                         res.append(cell)
         return res
+
+    def load_scramble(self, scramble):
+        scramble = list(scramble)
+        sides = ['U', 'L', 'F', 'R', 'B', 'D']
+        for side in sides:
+            finished_sides = 0
+            side_size = self.dim[0] * self.dim[1]
+            # get the current side
+            current_side_in_scramble = scramble[side_size * finished_sides:side_size * finished_sides + side_size]
+            cells = self.__get_side(side)
+            if side in ('B', 'U', 'L'):
+                i = 1
+                if side == 'U':
+                    i = 0
+                cells = reshape(cells, (self.dim[0], self.dim[1]))
+                mirror(cells, i)
+                cells = reshape(cells, (1, self.dim[0] * self.dim[1]))
+
+            i = 0
+            for cell in cells:
+                cell.color = current_side_in_scramble[i]
+                i += 1
+
 
     def get_side_in_matrix(self, side):
         res = []
