@@ -110,7 +110,7 @@ An algorithem in cubing means a sequence of moves for example: R U R' U'.
 <br /> Each letter means which side to turn(default is clockwise)
 - R - Right side
 - U - Up side
-- L - Down side
+- L - Left side
 - D - Down side
 - F - Front side
 - B - Back side
