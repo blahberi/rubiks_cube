@@ -9,12 +9,12 @@ ___
 git clone https://github.com/blahberi/rubiks_cube.git
 ```
 
-### requirements
-No requirements needed at all!!!
-All of the libraries that the program uses are preinstalled with python 
-
 Then all you need is in the Cube folder,
 so take it out and put it in your project.
+
+### Requirements
+No requirements needed at all!!!
+All of the libraries that the program uses are preinstalled with python.
 
 ___
 ### How to use
