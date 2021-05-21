@@ -53,7 +53,9 @@ def __solve_cross(cube):
                     res += 'U '
 
         elif edge.norm[1] == 1:
-            if neighbor.norm[color_to_norm[neighbor.color][0]] == color_to_norm[neighbor.color][1]:
+            axis = color_to_norm[neighbor.color][0]
+            value = color_to_norm[neighbor.color][1]
+            if neighbor.norm[axis] == value:
                 edgeInPlace = True
             else:
                 i = 0
@@ -103,8 +105,17 @@ def __solve_cross(cube):
 
 def __solve_corners(cube):
     res = ''
-    color_to_norm = {'g': (2, -1), 'o': (0, -1), 'b': (2, 1), 'r': (0, 1)}
-    norms = {'u': (0, -1, 0), 'r': (1, 0, 0), 'd': (0, 1, 0), 'l': (-1, 0, 0), 'b': (0, 0, 1), 'f': (0, 0, -1)}
+    color_to_norm = {'g': (2, -1),
+                     'o': (0, -1),
+                     'b': (2, 1),
+                     'r': (0, 1)}
+
+    norms = {'u': (0, -1, 0),
+             'r': (1, 0, 0),
+             'd': (0, 1, 0),
+             'l': (-1, 0, 0),
+             'b': (0, 0, 1),
+             'f': (0, 0, -1)}
     corners = __get_yellow_corners(cube)
     solved = []
     for corner in corners:
@@ -113,7 +124,9 @@ def __solve_corners(cube):
             if corner.norm == norms['d']:
                 cornerSolved = True
                 for i in range(2):
-                    if neighbors[i].norm[color_to_norm[neighbors[i].color][0]] != color_to_norm[neighbors[i].color][1]:
+                    axis = color_to_norm[neighbors[i].color][0]
+                    value = color_to_norm[neighbors[i].color][1]
+                    if neighbors[i].norm[axis] != value:
                         cornerSolved = False
                 if cornerSolved:
                     solved.append(corner)
@@ -244,31 +257,26 @@ def __solve_second_layer(cube):
     color_to_norm = {'g': (2, -1), 'o': (0, -1), 'b': (2, 1), 'r': (0, 1)}
     res = ''
     edges = __get_all_edges(cube)
-    #i need to do that 2 times because it does not remove all of them in one go
-    #idk y i will check later
-    for i in range(2):
-        for edge in edges:
-            if edge.color == 'y':
-                edges.remove(edge)
-                edges.remove(__get_neighbors(cube, edge)[0])
-            elif __get_neighbors(cube, edge)[0].color == 'y':
-                edges.remove(edge)
-                edges.remove(__get_neighbors(cube, edge)[0])
-            elif edge.color == 'w':
-                edges.remove(edge)
-                edges.remove(__get_neighbors(cube, edge)[0])
-            elif __get_neighbors(cube, edge)[0].color == 'w':
-                edges.remove(edge)
-                edges.remove(__get_neighbors(cube, edge)[0])
+    newEdges = []
+    for edge in edges:
+        currentEdgeColors = [edge.color, __get_neighbors(cube, edge)[0].color]
+        goodEdge = True
+        if 'w' in currentEdgeColors or 'y' in currentEdgeColors:
+            goodEdge = False
+        if goodEdge:
+            newEdges.append(edge)
+    edges = newEdges
 
-    b = 0
     for edge in edges:
         already_solved = True
         edge_n_neighbor = __get_neighbors(cube, edge)
         edge_n_neighbor.append(edge)
         for piece in edge_n_neighbor:
-            if piece.norm[color_to_norm[piece.color][0]] != color_to_norm[piece.color][1]:
+            axis = color_to_norm[piece.color][0]
+            value = color_to_norm[piece.color][1]
+            if piece.norm[axis] != value:
                 already_solved = False
+
         if not already_solved:
             if edge.point[1] == 0:
                 i = 0
@@ -302,26 +310,28 @@ def __solve_second_layer(cube):
                     color2 = color1
                     color1 = __get_neighbors(cube, edge)[0].color
 
-                #the tuples in the dict show the color that is in the right and the color that is in the left
-                colors_to_turns = {'g': ('r', 'o'), 'o': ('g', 'b'), 'b': ('o', 'r'), 'r': ('b', 'g')}
+                # the tuples in the dict show the color that is in the right
+                # and the color that is in the left
+                colors_to_turns = {'g': ('r', 'o'),
+                                   'o': ('g', 'b'),
+                                   'b': ('o', 'r'),
+                                   'r': ('b', 'g')}
+
                 for i in range(tuple(colors_to_turns).index(color1)):
                     cube.move('l')
                     res += 'mL '
                     cube.turn('U', 'r')
                     res += 'U '
 
-                if color2 == colors_to_turns[color1][0]:
-                    cube.sequence("U R U` R` U` F` U F")
-                    res += 'U R U` R` U` F` U F '
-                elif color2 == colors_to_turns[color1][1]:
-                    cube.sequence("U` L` U L U F U` F`")
-                    res += 'U` L` U L U F U` F` '
+                side_to_alg = ('U R U` R` U` F` U F', 'U` L` U L U F U` F`')
+                side = colors_to_turns[color1].index(color2)
+                cube.sequence(side_to_alg[side])
+                res += side_to_alg[side] + ' '
                 for i in range(tuple(colors_to_turns).index(color1)):
                     cube.move('r')
                     res += 'mR '
 
                 edges.remove(__get_neighbors(cube, edge)[0])
-                b += 1
 
     return res
 
@@ -360,7 +370,6 @@ def __oll_step_2(cube):
             cube.turn('U', 'r')
             res += 'U '
             side = __get_side_corners_map(cube, 'U', 'w')
-
 
 
 def __oll_step_1(cube):
@@ -408,7 +417,9 @@ def __pll_step_1(cube):
     for i in range(4):
         done = True
         for currentSide in sides:
-            if __get_side_corners(cube, currentSide) != __get_side_corners(solvedCube, currentSide):
+            cubeSide = __get_side_corners(cube, currentSide)
+            solvedSide = __get_side_corners(solvedCube, currentSide)
+            if cubeSide != solvedSide:
                 done = False
         if done:
             return res
@@ -445,7 +456,9 @@ def __pll_step_1(cube):
     while True:
         done = True
         for side in sides:
-            if __get_side_corners(cube, side) != __get_side_corners(solvedCube, side):
+            cubeSide = __get_side_corners(cube, side)
+            solvedSide = __get_side_corners(solvedCube, side)
+            if cubeSide != solvedSide:
                 done = False
         if done:
             return res
@@ -662,9 +675,9 @@ def __solve_3x3(cube):
 
 def __solve_2x2(cube):
     res = ''
-    res +=__solve_corners(cube)
+    res += __solve_corners(cube)
     res += __oll_step_2(cube)
-    res +=__pll_step_1(cube)
+    res += __pll_step_1(cube)
     return __optimize_sequence(res)
 
 

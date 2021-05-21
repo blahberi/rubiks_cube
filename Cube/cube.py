@@ -4,35 +4,36 @@ from Cube.cell import Cell
 
 class _rotator:
     def __init__(self):
-        # first number in the tuple means which axis in the order {0:'x', 1:'y', 2:'z'}
+        # first number in the tuple means which axis in the order:
+        # {0:'x', 1:'y', 2:'z'}
         # second number in the tuple means what to multiply that axis by
         self.magical_rotator = [
-            [# Up
+            [  # Up
                 [(2, 1), (1, 1), (0, -1)],
                 [(2, -1), (1, 1), (0, 1)]
             ],
-            [# Left
+            [  # Left
                 [(0, 1), (2, -1), (1, 1)],
                 [(0, 1), (2, 1), (1, -1)]
             ],
-            [# Front
+            [  # Front
                 [(1, -1), (0, 1), (2, 1)],
                 [(1, 1), (0, -1), (2, 1)]
             ],
-            [# Right
+            [  # Right
                 [(0, 1), (2, 1), (1, -1)],
                 [(0, 1), (2, -1), (1, 1)]
             ],
-            [# Back
+            [  # Back
                 [(1, 1), (0, -1), (2, 1)],
                 [(1, -1), (0, 1), (2, 1)]
             ],
-            [# Down
+            [  # Down
                 [(2, -1), (1, 1), (0, 1)],
                 [(2, 1), (1, 1), (0, -1)]
             ]]
 
-    def get_roator(self, move, direction):
+    def get_rotator(self, move, direction):
         moveInt = 0
         directions = {'r': 0, 'l': 1}
         moves = ['U', 'L', 'F', 'R', 'B', 'D']
@@ -42,12 +43,11 @@ class _rotator:
         return self.magical_rotator[moveInt][directions[direction]]
 
     def rotate(self, cords, move, direction):
-        rotator = self.get_roator(move, direction)
+        rotator = self.get_rotator(move, direction)
         res = []
         for operation in rotator:
             res.append(cords[operation[0]] * operation[1])
         return tuple(res)
-
 
 
 def reshape(mat, dim):
@@ -84,7 +84,12 @@ class Cube:
         self.dim = (3, 3)
         self.positionNums = []
         self.__build_cube()
-        self.colorToNorm = {'U': (0, -1, 0), 'L': (-1, 0, 0), 'F': (0, 0, -1), 'R': (1, 0, 0), 'B': (0, 0, 1), 'D': (0, 1, 0)}
+        self.colorToNorm = {'U': (0, -1, 0),
+                            'L': (-1, 0, 0),
+                            'F': (0, 0, -1),
+                            'R': (1, 0, 0),
+                            'B': (0, 0, 1),
+                            'D': (0, 1, 0)}
 
     def __build_cube(self):
         scramble = self.__get_solved_scramble()
@@ -92,13 +97,13 @@ class Cube:
         scramble = list(scramble)
 
         self.positionsNums = []
-        
+
         if sideSize % 2 == 0:
             nums = range(int(self.dim[0] / 2))
             for i in nums:
                 self.positionsNums.append(-i - 1)
             self.positionsNums.reverse()
-            
+
             for i in nums:
                 self.positionsNums.append(i + 1)
         else:
@@ -111,36 +116,55 @@ class Cube:
                 self.positionsNums.append(i + 1)
 
         i = 0
-        #top
+        # top
         for z in self.positionsNums:
             for x in self.positionsNums:
-                self.cells.append(Cell(point=(x, -1, z), norm=(0, -1, 0), color=scramble[i]))
+                self.cells.append(
+                    Cell(
+                        point=(x, -1, z),
+                        norm=(0, -1, 0),
+                        color=scramble[i]))
                 i += 1
-        #left
+        # left
         for y in self.positionsNums:
             for z in self.positionsNums:
-                self.cells.append(Cell(point=(-1, y, z), norm=(-1, 0, 0), color=scramble[i]))
+                self.cells.append(
+                    Cell(point=(-1, y, z),
+                         norm=(-1, 0, 0),
+                         color=scramble[i]))
                 i += 1
-        #front
+        # front
         for y in self.positionsNums:
             for x in self.positionsNums:
-                self.cells.append(Cell(point=(x, y, -1), norm=(0, 0, -1), color=scramble[i]))
+                self.cells.append(
+                    Cell(point=(x, y, -1),
+                         norm=(0, 0, -1),
+                         color=scramble[i]))
                 i += 1
-        #right
+        # right
         for y in self.positionsNums:
             for z in self.positionsNums:
-                self.cells.append(Cell(point=(1, y, z), norm=(1, 0, 0), color=scramble[i]))
+                self.cells.append(
+                    Cell(point=(1, y, z),
+                         norm=(1, 0, 0),
+                         color=scramble[i]))
                 i += 1
-        #back
+        # back
         for y in self.positionsNums:
             for x in self.positionsNums:
-                self.cells.append(Cell(point=(x, y, 1), norm=(0, 0, 1), color=scramble[i]))
+                self.cells.append(
+                    Cell(point=(x, y, 1),
+                         norm=(0, 0, 1),
+                         color=scramble[i]))
                 i += 1
 
-        #bottom
+        # bottom
         for z in self.positionsNums:
             for x in self.positionsNums:
-                self.cells.append(Cell(point=(x, 1, z), norm=(0, 1, 0), color=scramble[i]))
+                self.cells.append(
+                    Cell(point=(x, 1, z),
+                         norm=(0, 1, 0),
+                         color=scramble[i]))
                 i += 1
 
     def __get_side(self, side):
@@ -178,7 +202,9 @@ class Cube:
             finished_sides = 0
             side_size = self.dim[0] * self.dim[1]
             # get the current side
-            current_side_in_scramble = scramble[side_size * finished_sides:side_size * finished_sides + side_size]
+            start = side_size * finished_sides
+            end = side_size * finished_sides + side_size
+            current_side_in_scramble = scramble[start:end]
             cells = self.__get_side(side)
             if side in ('B', 'U', 'L'):
                 i = 1
@@ -192,7 +218,6 @@ class Cube:
             for cell in cells:
                 cell.color = current_side_in_scramble[i]
                 i += 1
-
 
     def get_side_in_matrix(self, side):
         res = []
@@ -229,13 +254,20 @@ class Cube:
 
     def turn(self, side, direction):
         cells = []
-        #smallest cordinates possible
+        # smallest coordinates possible
         negative = self.positionsNums[0]
-        #biggest cordinates possible
+        # biggest coordinates possible
         positive = self.positionsNums[-1]
         mid = 0
-        #the first number in the tuple means which axis on the cordinates are we going to compare
-        sidesPoint = {'U': (1, negative), 'L': (0, negative), 'F': (2, negative), 'R': (0, positive), 'B': (2, positive), 'D': (1, positive), 'M': (1, mid)}
+        # the first number in the tuple means
+        # which axis on the coordinates are we going to compare
+        sidesPoint = {'U': (1, negative),
+                      'L': (0, negative),
+                      'F': (2, negative),
+                      'R': (0, positive),
+                      'B': (2, positive),
+                      'D': (1, positive),
+                      'M': (1, mid)}
 
         for cell in self.cells:
             if cell.point[sidesPoint[side][0]] == sidesPoint[side][1]:
@@ -254,8 +286,10 @@ class Cube:
                 return
             for cell in cells:
                 if cell in beltCells:
-                    cell.point = self.rotator.rotate(cell.point, side, direction)
-                    cell.norm = self.rotator.rotate(cell.norm, side, direction)
+                    point = cell.point
+                    norm = cell.norm
+                    cell.point = self.rotator.rotate(point, side, direction)
+                    cell.norm = self.rotator.rotate(norm, side, direction)
             return
 
         for cell in cells:
