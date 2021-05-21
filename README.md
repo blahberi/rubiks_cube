@@ -1,7 +1,7 @@
 # Rubik's cube
 
 ___
-A program that can solve a rubik's cube.
+A python program that can solve a rubik's cube.
 
 ___
 ### How to install
