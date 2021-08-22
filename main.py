@@ -1,5 +1,6 @@
 from Cube.cube import Cube
-from Cube import solver
+from Cube.Solver import kociemba
+from Cube.Solver import beginners
 import time
 import math
 
@@ -9,16 +10,19 @@ def round_half_up(n, decimals=0):
     return math.floor(n*multiplier + 0.5) / multiplier
 
 
-times = []
-print('Running 100 tests...')
-for i in range(100):
-    cube = Cube()
-    cube.scramble()
-    start = time.time()
-    solver.solve(cube)
-    end = time.time()
-    times.append(end - start)
+cube = Cube('ywogwwrry'
+            'rrbooyogb'
+            'wbrrgywgg'
+            'grbbrywyo'
+            'ybbobbgwg'
+            'owroygwoy')
+print(cube)
+start = time.time()
+solution = kociemba.solve(cube)
+cube.sequence(solution)
+end = time.time()
 print('Done!')
-average = sum(times) / len(times)
-print(f"Average time: {round_half_up(average, 3)} seconds.")
-print(f"Total time: {round_half_up(sum(times), 3)} seconds.")
+print(f'solution: {solution}')
+print(cube)
+time = end - start
+print(f"time: {round_half_up(time, 3)} seconds.")

@@ -18,13 +18,14 @@ All of the libraries that the program uses are preinstalled with python.
 
 ___
 ### How to use
-```python
-from Cube.cube import Cube # import cube
-from Cube import solver # import solver
 
-cube = Cube() # create a cube
-cube.scramble() # scramble cube
-solver.solve(cube) # solve the cube
+```python
+from Cube.cube import Cube  # import cube
+from Cube.Solver.beginners import solver
+
+cube = Cube()  # create a cube
+cube.scramble()  # scramble cube
+solver.solve(cube)  # solve the cube
 ```
 ```python
 scramble = cube.scramble() # Cube.scramble() returns a string of the scramble

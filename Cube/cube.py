@@ -78,12 +78,12 @@ def mirror(mat, axis=1):
 
 
 class Cube:
-    def __init__(self):
+    def __init__(self, scramble=None):
         self.rotator = _rotator()
         self.cells = []
         self.dim = (3, 3)
         self.positionNums = []
-        self.__build_cube()
+        self.__build_cube(scramble)
         self.colorToNorm = {'U': (0, -1, 0),
                             'L': (-1, 0, 0),
                             'F': (0, 0, -1),
@@ -91,8 +91,9 @@ class Cube:
                             'B': (0, 0, 1),
                             'D': (0, 1, 0)}
 
-    def __build_cube(self):
-        scramble = self.__get_solved_scramble()
+    def __build_cube(self, scramble=None):
+        if scramble == None:
+            scramble = self.__get_solved_scramble()
         sideSize = self.dim[0] * self.dim[1]
         scramble = list(scramble)
 
@@ -118,6 +119,7 @@ class Cube:
         i = 0
         # top
         for z in self.positionsNums:
+            z = z*-1
             for x in self.positionsNums:
                 self.cells.append(
                     Cell(
@@ -128,6 +130,7 @@ class Cube:
         # left
         for y in self.positionsNums:
             for z in self.positionsNums:
+                z = z*-1
                 self.cells.append(
                     Cell(point=(-1, y, z),
                          norm=(-1, 0, 0),
@@ -152,6 +155,7 @@ class Cube:
         # back
         for y in self.positionsNums:
             for x in self.positionsNums:
+                x = x*-1
                 self.cells.append(
                     Cell(point=(x, y, 1),
                          norm=(0, 0, 1),
@@ -166,6 +170,11 @@ class Cube:
                          norm=(0, 1, 0),
                          color=scramble[i]))
                 i += 1
+
+    def load_cube(self, colors):
+        self.cells = []
+        self.positionsNums = []
+        self.__build_cube(colors)
 
     def __get_side(self, side):
         res = []
@@ -235,6 +244,28 @@ class Cube:
         res = colors
         res = reshape(res, (self.dim[0], self.dim[1]))
 
+        return res
+
+    def get_cube_colors(self):
+        res = ''
+        sides = ['U', 'L', 'F', 'R', 'B', 'D']
+        for side in sides:
+            cells = self.__get_side(side)
+            if side in ('B', 'U', 'L'):
+                i = 1
+                if side == 'U':
+                    i = 0
+                cells = reshape(cells, (self.dim[0], self.dim[1]))
+                mirror(cells, i)
+                cells = reshape(cells, (1, self.dim[0] * self.dim[1]))
+            colors = []
+            for cell in cells:
+                colors.append(cell.color)
+            i = 0
+            for a in range(self.dim[0]):
+                for b in range(self.dim[1]):
+                    res += colors[i]
+                    i += 1
         return res
 
     def __get_solved_scramble(self):
@@ -325,7 +356,10 @@ class Cube:
                 # W moves are not fully done yet
 
             if not moved:
-                self.turn(move[0], direction)
+                if move[0] == 'm':
+                    self.move(move[1].lower())
+                else:
+                    self.turn(move[0], direction)
             else:
                 moved = False
 

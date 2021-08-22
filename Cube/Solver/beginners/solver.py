@@ -662,6 +662,7 @@ def __optimize_sequence(sequence):
 
 
 def __solve_3x3(cube):
+    colors = cube.get_cube_colors()
     res = ''
     res += __solve_cross(cube)
     res += __solve_corners(cube)
@@ -670,19 +671,15 @@ def __solve_3x3(cube):
     res += __oll_step_2(cube)
     res += __pll_step_1(cube)
     res += __pll_step_2(cube)
+    cube.load_cube(colors)
     return __optimize_sequence(res)
 
 
 def __solve_2x2(cube):
+    colors = cube.get_cube_colors()
     res = ''
     res += __solve_corners(cube)
     res += __oll_step_2(cube)
     res += __pll_step_1(cube)
+    cube.load_cube(colors)
     return __optimize_sequence(res)
-
-
-def solve(cube):
-    if cube.dim == (2, 2):
-        return __solve_2x2(cube)
-    elif cube.dim == (3, 3):
-        return __solve_3x3(cube)
